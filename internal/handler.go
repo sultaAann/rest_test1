@@ -70,3 +70,46 @@ func (h handler) DeleteById(c *gin.Context) {
 
 	c.Status(http.StatusOK)
 }
+
+func (h handler) Create(c *gin.Context) {
+	var newTask task
+
+	if err := c.BindJSON(&newTask); err != nil {
+		return
+	}
+	id, err := h.r.Create(newTask)
+	if err != nil {
+		c.Error(err)
+	}
+
+	c.IndentedJSON(http.StatusOK, map[string]int{"id": id})
+}
+
+func (h handler) Update(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Error(err)
+	}
+	_, err = h.r.GetById(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.AbortWithError(http.StatusNotFound, err)
+		} else {
+			c.Error(err)
+		}
+	}
+
+	var updateTask task
+
+	if err := c.Bind(&updateTask); err != nil {
+		return
+	}
+
+	res, err := h.r.Update(id, updateTask)
+
+	if err != nil {
+		c.Error(err)
+	}
+
+	c.IndentedJSON(http.StatusOK, res)
+}

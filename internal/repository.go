@@ -3,6 +3,7 @@ package internal
 import (
 	"database/sql"
 	"fmt"
+	"time"
 )
 
 type Repository interface {
@@ -61,4 +62,35 @@ func (r repository) DeleteById(id int) error {
 		return err
 	}
 	return nil
+}
+
+func (r repository) Create(t task) (int, error) {
+	var id int
+	err := r.db.QueryRow(
+		"INSERT INTO task(title, description) VALUES ($1, $2) RETURNING id;",
+		t.Title,
+		t.Description).Scan(&id)
+
+	if err != nil {
+		return -1, err
+	}
+
+	return id, err
+}
+
+func (r repository) Update(id int, u task) (*task, error) {
+	_, err := r.db.Exec(
+		"UPDATE task SET title=$1, description=$2, is_completed=$3, updated_at=$4 WHERE id = $5",
+		u.Title,
+		u.Description,
+		u.Is_completed,
+		time.Now(),
+		id,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return r.GetById(id)
 }

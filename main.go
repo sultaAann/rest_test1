@@ -14,10 +14,10 @@ func main() {
 
 	router := gin.Default()
 
-	// router.POST("/tasks/", Create)
+	router.POST("/tasks/", handler.Create)
 	router.GET("/tasks/", handler.GetAll)
 	router.GET("/tasks/:id", handler.GetById)
-	// router.PUT("/tasks/:id", Update)
+	router.PUT("/tasks/:id", handler.Update)
 	router.DELETE("/tasks/:id", handler.DeleteById)
 
 	router.Run("localhost:8080")
