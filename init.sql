@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS task (
     title VARCHAR(200) NOT NULL,
     description TEXT,
     is_completed BOOLEAN DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
 

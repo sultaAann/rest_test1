@@ -1,8 +1,9 @@
 package internal
 
 import (
-	"fmt"
+	"database/sql"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -30,10 +31,42 @@ func (h handler) GetAll(c *gin.Context) {
 	if err != nil {
 		c.Error(err)
 	}
-	fmt.Println(res)
 	c.IndentedJSON(http.StatusOK, res)
 }
 
-// func Create(c *gin.Context) {
-// 	c.
-// }
+func (h handler) GetById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Error(err)
+	}
+	res, err := h.r.GetById(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.AbortWithError(http.StatusNotFound, err)
+		} else {
+			c.Error(err)
+		}
+	}
+	c.IndentedJSON(http.StatusOK, res)
+}
+
+func (h handler) DeleteById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Error(err)
+	}
+
+	_, err = h.r.GetById(id)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.AbortWithError(http.StatusNotFound, err)
+		} else {
+			c.Error(err)
+		}
+	}
+
+	h.r.DeleteById(id)
+
+	c.Status(http.StatusOK)
+}
