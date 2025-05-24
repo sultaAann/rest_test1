@@ -15,7 +15,7 @@ type ConfigDB struct {
 }
 
 func ConnectDB() *sql.DB {
-	db, err := sql.Open("postgres", "postgres://test:test@localhost:5432/test?sslmode=disable")
+	db, err := sql.Open("postgres", "postgres://test:test@localhost:5432/test?sslmode=disable") // make norm config
 	if err != nil {
 		panic("Cannot connect DB")
 	}

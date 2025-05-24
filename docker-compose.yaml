@@ -12,5 +12,12 @@ services:
       POSTGRES_USER: test
       POSTGRES_DB: test
 
+  # web:
+  #   build: .
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - db
+
 volumes:
   postgres_data:
